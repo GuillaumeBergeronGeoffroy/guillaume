@@ -1,2 +1,2 @@
-# guillaume bergerong geoffroy
+# guillaume
 Personal Linktree 
