@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rotating Divs</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="node bubble">
+        <div class="title">DEV</div>
+        <div class="expand">
+          Guillaume <br />
+          Bergeron <br />
+          Geoffroy <br /><br />
+          Dev from Montreal <br /><br />
+          Attractors <br />
+          Teleology <br />
+          Agency <br /><br />
+          Code Fast <br /><br />
+          <a target="_blank" href="https://github.com/GuillaumeBergeronGeoffroy"
+            >GitHub</a
+          >
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/guillaumegeoffroy/"
+            >LinkedIn</a
+          >
+        </div>
+      </div>
+      <div class="child bubble" id="child1">
+        <div class="title">SWORD<br />OF<br />KNOWLEDGE</div>
+        <div class="expand">
+          The Sword Of Knowledge <br />
+          <br />
+          UI for openAI API to generate iteratively, branch out, save and
+          retrieve states. <br />
+          <br />
+          <a
+            target="_blank"
+            href="https://github.com/GuillaumeBergeronGeoffroy/the-sword-of-knowledge"
+            >Code</a
+          >
+          <a target="_blank" href="https://the-sword-of-knowledge.web.app/"
+            >Try</a
+          >
+        </div>
+      </div>
+      <div class="child bubble" id="child2">
+        <div class="title">GPT<br />GRAPH</div>
+        <div class="expand">
+          GPT-GRAPH <br />
+          <br />
+          UI for openAI API to synthesise text to graph. <br />
+          <br />
+          Iteratively add text and explore relationships between concepts.
+          <br /><br />
+          <a
+            target="_blank"
+            href="https://github.com/GuillaumeBergeronGeoffroy/gpt-graph"
+            >Code</a
+          >
+          <a target="_blank" href="https://gpt-graph.web.app/">Try</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<script>
+  const container = document.querySelector(".container");
+  const node = document.querySelector(".node");
+  const children = document.querySelectorAll(".child");
+  const numChildren = children.length;
+  let stopRotate = (resizeStopRotate = false);
+
+  let radius;
+
+  function calculateRadius() {
+    // Get the width of a child div
+    const childHeight = children[0].offsetHeight;
+    // get the inner width
+    const containerWidth = container.offsetWidth;
+    radius =
+      ((childHeight * numChildren) / (2 * Math.PI)) *
+      (containerWidth > 1000 ? 6 : 4);
+  }
+
+  function positionChildren() {
+    for (let i = 0; i < numChildren; i++) {
+      const angle = ((2 * Math.PI) / numChildren) * i;
+      const x = radius * Math.cos(angle);
+      const y = radius * Math.sin(angle);
+      children[
+        i
+      ].style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+    }
+  }
+
+  function updatePositions() {
+    calculateRadius();
+    positionChildren();
+  }
+
+  function animateRotation() {
+    let angle = 0;
+    const rotationSpeed = 0.005;
+
+    function rotate() {
+      if (!stopRotate && !resizeStopRotate) {
+        angle += rotationSpeed;
+
+        for (let i = 0; i < numChildren; i++) {
+          const childAngle = ((2 * Math.PI) / numChildren) * i;
+          const x = radius * Math.cos(angle + childAngle);
+          const y = radius * Math.sin(angle + childAngle);
+          children[
+            i
+          ].style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${-angle}rad)`;
+          // apply reverse roration to all child nodes of childrend[i] and keep tranform -50%-50%
+          [...children[i].children].forEach((child) => {
+            child.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
+          });
+        }
+      }
+
+      requestAnimationFrame(rotate);
+    }
+
+    rotate();
+  }
+
+  function evalDisplay() {
+    if (!(window.innerWidth > 800 && window.innerHeight > 600)) {
+      // get all bubbles and set position to absolute
+      [...children, node].forEach((element) => {
+        element.style.position = "relative";
+        element.style.transform = "unset";
+        stopRotate = resizeStopRotate = true;
+        element.style.top = "0%";
+        element.style.left = "0%";
+        // body style align item auto
+        document.body.style.alignItems = "auto";
+      });
+    } else {
+      [...children, node].forEach((element) => {
+        element.style.position = "absolute";
+        element.style.transform = "translate(-50%, -50%)";
+        element.style.top = "50%";
+        element.style.left = "50%";
+      });
+      document.body.style.alignItems = "center";
+      resizeStopRotate = stopRotate = false;
+      updatePositions();
+    }
+  }
+
+  // add event listener resize
+  window.addEventListener("resize", evalDisplay);
+  evalDisplay();
+
+  animateRotation();
+
+  window.addEventListener("load", () => {
+    // add event listener on buble mouseover or click
+    [...children, node].forEach((element) => {
+      console.log(element);
+      element.addEventListener("mouseover", () => {
+        // remove active class from all bubbles
+        [...children, node].forEach((element) => {
+          element.classList.remove("active");
+        });
+        // add active class to the bubble
+        element.classList.add("active");
+        // randomize border color of element
+        element.style.borderColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        stopRotate = true;
+        // change the content of the main bubble
+      });
+      // on mouse leave remove active class
+      element.addEventListener("mouseleave", () => {
+        element.classList.remove("active");
+        // reset border color to 0b0b0b
+        element.style.borderColor = "#0b0b0b";
+        stopRotate = false;
+      });
+      element.addEventListener("click", () => {
+        // remove active class from all bubbles
+        [...children, node].forEach((element) => {
+          element.classList.remove("active");
+          element.style.borderColor = "#0b0b0b";
+        });
+        // add active class to the bubble
+        element.classList.add("active");
+        // randomize border color of element
+        element.style.borderColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        stopRotate = true;
+        // change the content of the main bubble
+      });
+    });
+  });
+  // each bubble is a div with a tile and a content when the bubble is inactive the content font size
+</script>
+
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+  }
+
+  .container {
+    position: relative;
+  }
+
+  .node {
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  body,
+  html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #000;
+    font-family: "Courier New", Courier, monospace;
+  }
+  a {
+    color: #fff !important;
+  }
+  .bubble {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    transition: all 0.5s;
+    border: 5px solid #0b0b0b;
+    background: #000;
+    color: #fff;
+    text-align: center;
+    position: absolute;
+    padding: 80px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .bubble:hover {
+    cursor: pointer;
+  }
+  .bubble .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    /* margin-top: 10px; */
+    transition: all 0.5s;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .bubble.active {
+    width: 200px;
+    height: 200px;
+    z-index: 1000;
+  }
+  .bubble .expand {
+    font-size: 0rem;
+    /* margin-top: 10px; */
+    opacity: 0;
+    transition: all 0.5s;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .bubble.active .title {
+    opacity: 0;
+  }
+  .bubble.active .expand {
+    font-size: 1rem;
+    opacity: 1;
+  }
+  /* max-widht 1000 */
+  @media (max-width: 1000px) {
+    .bubble {
+      width: 30px;
+      height: 30px;
+    }
+    .bubble .title {
+      font-size: 1rem;
+    }
+    .bubble.active {
+      width: 150px;
+      height: 150px;
+    }
+  }
+  /* max-width 800 */
+  @media (max-width: 800px) {
+    body {
+      align-items: unset;
+    }
+  }
+  /* max-widht 600 */
+  @media (max-width: 600px) {
+    .bubble {
+      width: 20px;
+      height: 20px;
+    }
+    .bubble.active {
+      width: 100px;
+      height: 100px;
+    }
+  }
+  /* max-width  */
+  @media (max-width: 400px) {
+    .bubble {
+      width: 15px;
+      height: 15px;
+    }
+    .bubble.active {
+      width: 70px;
+      height: 70px;
+    }
+    .bubble.active .expand {
+      font-size: 0.7rem;
+    }
+  }
+</style>
