@@ -2,4 +2,4 @@
 
 my Linktree
 
-Written with Copilot.
+Written with GPT.
