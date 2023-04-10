@@ -64,6 +64,24 @@
           <a target="_blank" href="https://gpt-graph.web.app/">Try</a>
         </div>
       </div>
+      <div class="child bubble" id="child3">
+        <div class="title">GPT<br />LEGACY</div>
+        <div class="expand">
+          GPT-LEFACY <br />
+          <br />
+          Web based IDE concept using OpenAI GPT API. <br />
+          <br />
+          Transforms codebase to layered abstraction data. Visualize and
+          generate code.
+          <br /><br />
+          <a
+            target="_blank"
+            href="https://github.com/GuillaumeBergeronGeoffroy/gpt-legacy"
+            >Code</a
+          >
+          <a target="_blank" href="https://gpt-legacy.web.app/">Try</a>
+        </div>
+      </div>
     </div>
   </body>
 </html>
@@ -84,7 +102,7 @@
     const containerWidth = container.offsetWidth;
     radius =
       ((childHeight * numChildren) / (2 * Math.PI)) *
-      (containerWidth > 1000 ? 6 : 4);
+      (containerWidth > 1000 ? 3.7 : 3);
   }
 
   function positionChildren() {
@@ -132,7 +150,7 @@
   }
 
   function evalDisplay() {
-    if (!(window.innerWidth > 800 && window.innerHeight > 600)) {
+    if (!(window.innerWidth > 800 && window.innerHeight > 650)) {
       // get all bubbles and set position to absolute
       [...children, node].forEach((element) => {
         element.style.position = "relative";
@@ -218,9 +236,6 @@
   }
 
   .node {
-    width: 50px;
-    height: 50px;
-    background-color: red;
     border-radius: 50%;
     position: absolute;
     top: 50%;
@@ -241,8 +256,8 @@
     color: #fff !important;
   }
   .bubble {
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     transition: all 0.5s;
     border: 5px solid #0b0b0b;
@@ -259,7 +274,7 @@
     cursor: pointer;
   }
   .bubble .title {
-    font-size: 1.5rem;
+    font-size: 24px;
     font-weight: bold;
     /* margin-top: 10px; */
     transition: all 0.5s;
@@ -269,12 +284,12 @@
     transform: translate(-50%, -50%);
   }
   .bubble.active {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     z-index: 1000;
   }
   .bubble .expand {
-    font-size: 0rem;
+    font-size: 0px;
     /* margin-top: 10px; */
     opacity: 0;
     transition: all 0.5s;
@@ -287,7 +302,7 @@
     opacity: 0;
   }
   .bubble.active .expand {
-    font-size: 1rem;
+    font-size: 16px;
     opacity: 1;
   }
   /* max-widht 1000 */
@@ -299,13 +314,13 @@
     .bubble .title {
       font-size: 1rem;
     }
-    .bubble.active {
+    /* .bubble.active {
       width: 150px;
       height: 150px;
-    }
+    } */
   }
-  /* max-width 800 */
-  @media (max-width: 800px) {
+  /* max-width 800 or max-height 600 */
+  @media (max-width: 800px) or (max-height: 650px) {
     body {
       flex-direction: column;
       align-items: unset;
@@ -319,11 +334,11 @@
   /* max-width  */
   @media (max-width: 400px) {
     .bubble.active {
-      width: 70px;
-      height: 70px;
+      width: 100px;
+      height: 100px;
     }
     .bubble.active .expand {
-      font-size: 0.7rem;
+      font-size: 12px;
     }
   }
 </style>
